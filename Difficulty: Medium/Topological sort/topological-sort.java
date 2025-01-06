@@ -58,29 +58,36 @@ class Main {
 class Solution {
     // Function to return list containing vertices in Topological order.
     static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
-       int n = adj.size();
-       Stack<Integer> st = new Stack<>();
-       int [] vist = new int[n];
-       
-       for(int node = 0; node < n; node++) {
-           if(vist[node] == 0) {
-               dfs(node,adj,vist,st);
-           }
-       }
-       ArrayList<Integer> list= new ArrayList<>();
-       while(!st.isEmpty()) {
-           list.add(st.pop());
-       }
-       
-       return list;
-    }
     
-    private static void dfs(int node, ArrayList<ArrayList<Integer>> adj, int[] vist, Stack<Integer> st) {
-        vist[node] = 1;
-        for(int aj : adj.get(node)) {
-            if(vist[aj] == 0) dfs(aj,adj,vist,st);
+        int n=adj.size();
+        int indegree[]=new int[n];
+        ArrayList<Integer> topo=new ArrayList<>();
+        
+        for(int i=0;i<n;i++){
+            for(Integer x:adj.get(i)){
+                indegree[x]++;
+            }
         }
         
-        st.push(node);
+        Queue<Integer> q = new LinkedList<>();
+        
+        for(int i=0;i<n;i++){
+            if(indegree[i]==0)
+            q.add(i);
+        }
+
+        while(!q.isEmpty()){
+            int node=q.peek();
+            q.remove();
+            topo.add(node);
+            
+            for(Integer x:adj.get(node)){
+                indegree[x]--;
+                if(indegree[x]==0)
+                q.add(x);
+            }
+        }
+        return topo;
+        
     }
 }
